@@ -3,15 +3,23 @@ html {
   -webkit-text-size-adjust: 100%;
   font: 112.5%/1.45em georgia, serif, sans-serif;
   box-sizing: border-box;
-  overflow-y: scroll;
+}
+/* 웹 페이지 높이 100% 사용하는 코드 */
+html,
+body,
+#___gatsby,
+#gatsby-focus-wrapper {
+  height: 100%;
+  padding: 0;
+  margin: 0;
 }
 body {
-  margin: 0;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   color: hsla(0, 0%, 0%, 0.8);
-  font-family: georgia, serif;
-  font-weight: normal;
+  font-family: -apple-system, BlinkMacSystemFont, Segoe UI, Roboto, Oxygen,
+    Ubuntu, Cantarell, Fira Sans, Droid Sans, Helvetica Neue, sans-serif;
+  font-weight: 600;
   word-wrap: break-word;
   font-kerning: normal;
   -moz-font-feature-settings: "kern", "liga", "clig", "calt";
@@ -72,6 +80,7 @@ dfn {
   font-style: italic;
 }
 h1 {
+  border-bottom: 10px solid yellowgreen;
   margin-left: 0;
   margin-right: 0;
   margin-top: 0;
@@ -251,6 +260,7 @@ textarea {
   box-sizing: inherit;
 }
 h2 {
+  border-bottom: 5px solid orange;
   margin-left: 0;
   margin-right: 0;
   margin-top: 0;
@@ -268,6 +278,7 @@ h2 {
   line-height: 1.1;
 }
 h3 {
+  border-bottom: 2px solid silver;
   margin-left: 0;
   margin-right: 0;
   margin-top: 0;

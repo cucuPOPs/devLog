@@ -1,25 +1,16 @@
-import * as React from "react"
-import { Link, navigate, useStaticQuery, graphql } from "gatsby"
-import styled from "styled-components"
-import moment from "moment"
-import { groupBy } from "../util/utils"
-import ListItem from "../components/ListItem"
+import React from "react"
 
-const IndexPage = () => {
-  const data = useStaticQuery(graphql`
-    query {
-      allMarkdownRemark(sort: { fields: frontmatter___slug }, limit: 1000) {
-        edges {
-          node {
-            frontmatter {
-              slug
-            }
-          }
-        }
-      }
-    }
-  `)
-  const { allMarkdownRemark } = data
+import { graphql, navigate } from "gatsby"
+import { groupBy } from "../util/utils"
+import moment from "moment"
+import styled from "styled-components"
+import ListItem from "../components/ListItem"
+require("prismjs/themes/prism-solarizedlight.css")
+export default function Template({
+  data, // this prop will be injected by the GraphQL query below.
+}) {
+  const { markdownRemark, allMarkdownRemark } = data // data.markdownRemark holds your post data
+  const { frontmatter, html } = markdownRemark
   const arr = allMarkdownRemark.edges.map((v, i) => ({
     child: v.node.frontmatter.slug,
     parent: v.node.frontmatter.slug.split("/")[1],
@@ -43,11 +34,14 @@ const IndexPage = () => {
         >{`Today I Learned`}</FlexDiv>
         <FlexDiv>책책체킷아웃~</FlexDiv>
       </Header>
-      <FlexDiv style={{ height: "100%" }}>
+      <FlexDiv style={{ height: "calc( 100% - 60px )" }}>
         <SideBar>
           {parentList.map((v, i) => {
             return (
-              <ListItem title={v} isOpen={false}>
+              <ListItem
+                title={v}
+                isOpen={v === markdownRemark.frontmatter.slug.split("/")[1]}
+              >
                 {result[v].map((v2, i2) => (
                   <div
                     onClick={() => {
@@ -63,26 +57,27 @@ const IndexPage = () => {
         </SideBar>
         <ContentView>
           <Content>
+            {/* <p style={{ textAlign: "center", fontSize: "40px" }}>
+              {frontmatter.title}
+            </p> */}
+            <h1>{frontmatter.title}</h1>
             <p
               style={{
-                fontSize: "80px",
-                whiteSpace: "pre-wrap",
-                margin: "80px 0px",
-                lineHeight: "100px",
-                borderBottom: "15px solid yellowgreen",
-              }}
-            >
-              {`오늘 배운건\n오늘 적자`}
-            </p>
-            <p
-              style={{
-                fontSize: "32px",
+                fontSize: "14px",
                 textAlign: "right",
+                lineHeight: "20px",
                 whiteSpace: "pre-wrap",
               }}
             >
-              {`박기락's TIL`}
+              {`Last update\n`}
+              {moment(frontmatter.date).format("YYYY년 MM월 DD일")}
             </p>
+
+            <div
+              className="blog-post-content"
+              dangerouslySetInnerHTML={{ __html: html }}
+              style={{ paddingBottom: "50px" }}
+            />
           </Content>
         </ContentView>
       </FlexDiv>
@@ -90,7 +85,28 @@ const IndexPage = () => {
   )
 }
 
-export default IndexPage
+export const pageQuery = graphql`
+  query($slug: String!) {
+    markdownRemark(frontmatter: { slug: { eq: $slug } }) {
+      html
+      frontmatter {
+        date(formatString: "MMMM DD, YYYY")
+        slug
+        title
+      }
+    }
+    allMarkdownRemark(sort: { fields: frontmatter___slug }, limit: 1000) {
+      edges {
+        node {
+          frontmatter {
+            slug
+          }
+        }
+      }
+    }
+  }
+`
+
 const Container = styled.div`
   display: flex;
   width: 100%;
@@ -112,9 +128,11 @@ const FlexDiv = styled.div`
 const Header = styled.div`
   display: flex;
   justify-content: space-between;
+  align-items: center;
   padding: 11.2px 24px;
   color: #2c3e50;
   border-bottom: 1px solid #eaecef;
+  min-height: 60px;
 `
 const SideBar = styled.div`
   min-width: 320px;
