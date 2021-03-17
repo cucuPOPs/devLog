@@ -43,7 +43,7 @@ const IndexPage = () => {
         >{`Today I Learned`}</FlexDiv>
         <FlexDiv>책책체킷아웃~</FlexDiv>
       </Header>
-      <FlexDiv style={{ height: "100%" }}>
+      <FlexDiv style={{ height: "calc( 100% - 60px )" }}>
         <SideBar>
           {parentList.map((v, i) => {
             return (
