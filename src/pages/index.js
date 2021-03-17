@@ -99,6 +99,7 @@ const Container = styled.div`
 `
 const FlexDiv = styled.div`
   display: flex;
+  flex-direction: row;
   margin-top: ${props => props.mt || 0};
   margin-right: ${props => props.mr || 0};
   margin-bottom: ${props => props.mb || 0};
@@ -112,9 +113,12 @@ const FlexDiv = styled.div`
 const Header = styled.div`
   display: flex;
   justify-content: space-between;
+  align-items: center;
   padding: 11.2px 24px;
   color: #2c3e50;
   border-bottom: 1px solid #eaecef;
+  flex-direction: row;
+  min-height: 60px;
 `
 const SideBar = styled.div`
   min-width: 320px;
