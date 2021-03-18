@@ -36,7 +36,7 @@ export default function Template({
         >{`Today I Learned`}</FlexDiv>
         <FlexDiv>책책체킷아웃~</FlexDiv>
       </Header>
-      <FlexDiv style={{ height: "calc( 100% - 60px )" }}>
+      <FlexDiv style={{ height: "calc( 100% - 60px )", flexDirection: "row" }}>
         <SideBar>
           {parentList.map((v, i) => {
             return (
@@ -129,6 +129,7 @@ const FlexDiv = styled.div`
 `
 const Header = styled.div`
   display: flex;
+  flex-direction: row;
   justify-content: space-between;
   align-items: center;
   padding: 11.2px 24px;
