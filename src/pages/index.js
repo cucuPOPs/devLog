@@ -9,7 +9,13 @@ import "../global.css"
 const IndexPage = () => {
   const data = useStaticQuery(graphql`
     query {
-      allMarkdownRemark(sort: { fields: frontmatter___slug }, limit: 1000) {
+      allMarkdownRemark(
+        sort: {
+          fields: [frontmatter___priority, frontmatter___slug]
+          order: [ASC, ASC]
+        }
+        limit: 1000
+      ) {
         edges {
           node {
             frontmatter {
