@@ -44,7 +44,7 @@ slug: "/Etc/MarkdownCheatsheet"
 ![alt-text](path)
 ```
 
-![fff](duck.png)
+![fff](./duck.png)
 
 ## Table
 
