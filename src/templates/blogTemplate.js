@@ -5,6 +5,8 @@ import { groupBy } from "../util/utils"
 import moment from "moment"
 import styled from "styled-components"
 import ListItem from "../components/ListItem"
+import "./src/global.css"
+
 require("prismjs/themes/prism-solarizedlight.css")
 export default function Template({
   data, // this prop will be injected by the GraphQL query below.
