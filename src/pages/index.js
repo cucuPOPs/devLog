@@ -4,7 +4,7 @@ import styled from "styled-components"
 import moment from "moment"
 import { groupBy } from "../util/utils"
 import ListItem from "../components/ListItem"
-import "./src/global.css"
+import "../global.css"
 
 const IndexPage = () => {
   const data = useStaticQuery(graphql`
