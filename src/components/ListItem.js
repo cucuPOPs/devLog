@@ -5,7 +5,6 @@ import styled from "styled-components"
 const ListItem = props => {
   const { title, children, isOpen } = props
   const [open, setOpen] = useState(isOpen)
-  console.log("open", open)
   return (
     <div>
       <p
@@ -15,10 +14,10 @@ const ListItem = props => {
         }}
       >
         <span>{title}</span>
-        <span class={`arrow ${open ? "down" : "right"}`}></span>
+        <span className={`arrow ${open ? "down" : "right"}`}></span>
       </p>
       {open && (
-        <ul classname={"sidebar-links sidebar-group-items"}>{children}</ul>
+        <ul className={"sidebar-links sidebar-group-items"}>{children}</ul>
       )}
     </div>
   )

@@ -26,8 +26,6 @@ export default function Template({
     ),
   ]
   const result = groupBy(arr, "parent")
-  console.log(result)
-  console.log(markdownRemark)
   return (
     <div className={`theme-container ${asidebarVisible ? "sidebar-open" : ""}`}>
       <header className="navbar">
@@ -142,17 +140,18 @@ export default function Template({
           {parentList.map((v, i) => {
             return (
               <ListItem
+                key={i}
                 title={v}
                 isOpen={v === markdownRemark.frontmatter.slug.split("/")[1]}
               >
                 {result[v].map((v2, i2) => (
-                  <li>
+                  <li key={i2}>
                     <a
                       href="#"
                       onClick={() => {
                         navigate(v2.child)
                       }}
-                      class={`sidebar-link ${
+                      className={`sidebar-link ${
                         markdownRemark.frontmatter.slug === v2.child
                           ? "active"
                           : ""

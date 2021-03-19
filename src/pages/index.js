@@ -153,15 +153,15 @@ const IndexPage = () => {
         <ul className="sidebar-links">
           {parentList.map((v, i) => {
             return (
-              <ListItem title={v} isOpen={false}>
+              <ListItem title={v} isOpen={false} key={i}>
                 {result[v].map((v2, i2) => (
-                  <li>
+                  <li key={i2}>
                     <a
                       href="#"
                       onClick={() => {
                         navigate(v2.child)
                       }}
-                      class={`sidebar-link`}
+                      className={`sidebar-link`}
                     >
                       {v2.child.split("/")[2]}
                     </a>
@@ -175,15 +175,15 @@ const IndexPage = () => {
       <main className="page">
         <div className="theme-default-content content__default">
           <div>
-            <div class="titleContainer">
+            <div className="titleContainer">
               <h1>
                 오늘 배운 건
                 <br />
                 오늘 적자
               </h1>
 
-              <div class="infoContainer">
-                <div class="name">박기락's TIL</div>
+              <div className="infoContainer">
+                <div className="name">박기락's TIL</div>
                 <ul>
                   <li>
                     <a href="https://github.com/cucupops">GitHub</a>
