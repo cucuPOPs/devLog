@@ -52,6 +52,14 @@ module.exports = {
           },
           {
             resolve: `gatsby-remark-prismjs`,
+            options: {
+              divClassNames: "kg-card kg-code-card",
+              classPrefix: "language-",
+              inlineCodeMarker: null,
+              aliases: {},
+              noInlineHighlight: true,
+              escapeEntities: {},
+            },
           },
         ],
       },

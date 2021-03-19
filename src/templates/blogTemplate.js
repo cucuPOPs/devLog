@@ -1,16 +1,17 @@
-import React from "react"
+import React, { useState } from "react"
 
 import { graphql, navigate } from "gatsby"
 import { groupBy } from "../util/utils"
 import moment from "moment"
 import styled from "styled-components"
 import ListItem from "../components/ListItem"
-import "../global.css"
-
-require("prismjs/themes/prism-solarizedlight.css")
+import "../test.css"
+//import the Prism package
+require("prismjs/themes/prism-okaidia.css")
 export default function Template({
   data, // this prop will be injected by the GraphQL query below.
 }) {
+  const [asidebarVisible, setAsideBarVisible] = useState(false)
   const { markdownRemark, allMarkdownRemark } = data // data.markdownRemark holds your post data
   const { frontmatter, html } = markdownRemark
   const arr = allMarkdownRemark.edges.map((v, i) => ({
@@ -25,18 +26,171 @@ export default function Template({
     ),
   ]
   const result = groupBy(arr, "parent")
+  console.log(result)
+  console.log(markdownRemark)
   return (
-    <Container>
-      <Header>
-        <FlexDiv
-          style={{ fontSize: "24px" }}
+    <div className={`theme-container ${asidebarVisible ? "sidebar-open" : ""}`}>
+      <header className="navbar">
+        <div
+          className="sidebar-button"
+          onClick={() => {
+            setAsideBarVisible(!asidebarVisible)
+          }}
+          onBlur={() => {
+            setAsideBarVisible(false)
+          }}
+        >
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            aria-hidden="true"
+            role="img"
+            viewBox="0 0 448 512"
+            className="icon"
+          >
+            <path
+              fill="currentColor"
+              d="M436 124H12c-6.627 0-12-5.373-12-12V80c0-6.627 5.373-12 12-12h424c6.627 0 12 5.373 12 12v32c0 6.627-5.373 12-12 12zm0 160H12c-6.627 0-12-5.373-12-12v-32c0-6.627 5.373-12 12-12h424c6.627 0 12 5.373 12 12v32c0 6.627-5.373 12-12 12zm0 160H12c-6.627 0-12-5.373-12-12v-32c0-6.627 5.373-12 12-12h424c6.627 0 12 5.373 12 12v32c0 6.627-5.373 12-12 12z"
+            ></path>
+          </svg>
+        </div>
+        <a
+          href="#"
           onClick={() => {
             navigate("/")
           }}
-        >{`Today I Learned`}</FlexDiv>
-        <FlexDiv>책책체킷아웃~</FlexDiv>
-      </Header>
-      <FlexDiv style={{ height: "calc( 100% - 60px )", flexDirection: "row" }}>
+          className="home-link router-link-active"
+        >
+          <span className="site-name">Today I Learned</span>
+        </a>
+        <div className="links" style={{ maxWidth: "913px" }}>
+          <nav className="nav-links can-hide">
+            <div className="nav-item">
+              <a
+                href="https://github.com/cucupops/"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="nav-link external"
+              >
+                GitHub
+                <span>
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    aria-hidden="true"
+                    focusable="false"
+                    x="0px"
+                    y="0px"
+                    viewBox="0 0 100 100"
+                    width="15"
+                    height="15"
+                    className="icon outbound"
+                  >
+                    <path
+                      fill="currentColor"
+                      d="M18.8,85.1h56l0,0c2.2,0,4-1.8,4-4v-32h-8v28h-48v-48h28v-8h-32l0,0c-2.2,0-4,1.8-4,4v56C14.8,83.3,16.6,85.1,18.8,85.1z"
+                    ></path>
+                    <polygon
+                      fill="currentColor"
+                      points="45.7,48.7 51.3,54.3 77.2,28.5 77.2,37.2 85.2,37.2 85.2,14.9 62.8,14.9 62.8,22.9 71.5,22.9"
+                    ></polygon>
+                  </svg>
+                </span>
+              </a>
+            </div>
+          </nav>
+        </div>
+      </header>
+      <div className="sidebar-mask"></div>
+      <aside className="sidebar">
+        <nav className="nav-links">
+          <div className="nav-item">
+            <a
+              href="#"
+              onClick={() => {
+                navigate("https://github.com/cucupops/")
+              }}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="nav-link external"
+            >
+              GitHub
+              <span>
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  aria-hidden="true"
+                  focusable="false"
+                  x="0px"
+                  y="0px"
+                  viewBox="0 0 100 100"
+                  width="15"
+                  height="15"
+                  className="icon outbound"
+                >
+                  <path
+                    fill="currentColor"
+                    d="M18.8,85.1h56l0,0c2.2,0,4-1.8,4-4v-32h-8v28h-48v-48h28v-8h-32l0,0c-2.2,0-4,1.8-4,4v56C14.8,83.3,16.6,85.1,18.8,85.1z"
+                  ></path>
+                  <polygon
+                    fill="currentColor"
+                    points="45.7,48.7 51.3,54.3 77.2,28.5 77.2,37.2 85.2,37.2 85.2,14.9 62.8,14.9 62.8,22.9 71.5,22.9"
+                  ></polygon>
+                </svg>
+              </span>
+            </a>
+          </div>
+        </nav>
+        <ul className="sidebar-links">
+          {parentList.map((v, i) => {
+            return (
+              <ListItem
+                title={v}
+                isOpen={v === markdownRemark.frontmatter.slug.split("/")[1]}
+              >
+                {result[v].map((v2, i2) => (
+                  <li>
+                    <a
+                      href="#"
+                      onClick={() => {
+                        navigate(v2.child)
+                      }}
+                      class={`sidebar-link ${
+                        markdownRemark.frontmatter.slug === v2.child
+                          ? "active"
+                          : ""
+                      }`}
+                    >
+                      {v2.child.split("/")[2]}
+                    </a>
+                  </li>
+                ))}
+              </ListItem>
+            )
+          })}
+        </ul>
+      </aside>
+      <main className="page">
+        <div className="theme-default-content content__default">
+          <h1>{frontmatter.title}</h1>
+          <p
+            style={{
+              fontSize: "14px",
+              textAlign: "right",
+              lineHeight: "20px",
+              whiteSpace: "pre-wrap",
+            }}
+          >
+            {`Last update\n`}
+            {moment(frontmatter.date).format("YYYY년 MM월 DD일")}
+          </p>
+
+          <div
+            className="blog-post-content"
+            dangerouslySetInnerHTML={{ __html: html }}
+          />
+        </div>
+        <footer className="page-edit"> </footer>
+      </main>
+
+      {/* <FlexDiv style={{ height: "calc( 100% - 60px )", flexDirection: "row" }}>
         <SideBar>
           {parentList.map((v, i) => {
             return (
@@ -45,13 +199,14 @@ export default function Template({
                 isOpen={v === markdownRemark.frontmatter.slug.split("/")[1]}
               >
                 {result[v].map((v2, i2) => (
-                  <div
-                    onClick={() => {
-                      navigate(v2.child)
-                    }}
+                  <li               
                   >
+                  <a  onClick={() => {
+                      navigate(v2.child)
+                    }} class="sidebar-link">
                     {v2.child.split("/")[2]}
-                  </div>
+                    </a>
+                  </li>
                 ))}
               </ListItem>
             )
@@ -59,9 +214,6 @@ export default function Template({
         </SideBar>
         <ContentView>
           <Content>
-            {/* <p style={{ textAlign: "center", fontSize: "40px" }}>
-              {frontmatter.title}
-            </p> */}
             <h1>{frontmatter.title}</h1>
             <p
               style={{
@@ -76,14 +228,14 @@ export default function Template({
             </p>
 
             <div
-              className="blog-post-content"
+              classNameName="blog-post-content"
               dangerouslySetInnerHTML={{ __html: html }}
               style={{ paddingBottom: "50px" }}
             />
           </Content>
         </ContentView>
-      </FlexDiv>
-    </Container>
+      </FlexDiv> */}
+    </div>
   )
 }
 

@@ -5,38 +5,22 @@ import styled from "styled-components"
 const ListItem = props => {
   const { title, children, isOpen } = props
   const [open, setOpen] = useState(isOpen)
+  console.log("open", open)
   return (
     <div>
-      <Title
+      <p
+        className={`sidebar-heading ${isOpen ? "open" : ""}`}
         onClick={() => {
           setOpen(!open)
         }}
       >
-        {title}
-      </Title>
-      {open && <ChildItem>{children}</ChildItem>}
+        <span>{title}</span>
+        <span class={`arrow ${open ? "down" : "right"}`}></span>
+      </p>
+      {open && (
+        <ul classname={"sidebar-links sidebar-group-items"}>{children}</ul>
+      )}
     </div>
   )
 }
 export default ListItem
-const Title = styled.div`
-  width: 100%;
-  height: 30px;
-  display: flex;
-  align-items: center;
-  background-color: #555;
-  color: #fff;
-  &:hover {
-    background-color: #ccc;
-  }
-  padding-left: 10px;
-`
-const ChildItem = styled.div`
-  padding-left: 30px;
-  background-color: #f1f1f1;
-  & div {
-    &:hover {
-      color: yellowgreen;
-    }
-  }
-`

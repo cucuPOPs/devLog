@@ -1,4 +1,4 @@
-import * as React from "react"
+import React, { useState } from "react"
 import { Link, navigate, useStaticQuery, graphql } from "gatsby"
 import styled from "styled-components"
 import moment from "moment"
@@ -26,6 +26,7 @@ const IndexPage = () => {
       }
     }
   `)
+  const [asidebarVisible, setAsideBarVisible] = useState(false)
   const { allMarkdownRemark } = data
   const arr = allMarkdownRemark.edges.map((v, i) => ({
     child: v.node.frontmatter.slug,
@@ -40,60 +41,163 @@ const IndexPage = () => {
   ]
   const result = groupBy(arr, "parent")
   return (
-    <Container>
-      <Header>
-        <FlexDiv
-          style={{ fontSize: "24px" }}
+    <div className={`theme-container ${asidebarVisible ? "sidebar-open" : ""}`}>
+      <header className="navbar">
+        <div
+          className="sidebar-button"
+          onClick={() => {
+            setAsideBarVisible(!asidebarVisible)
+          }}
+          onBlur={() => {
+            setAsideBarVisible(false)
+          }}
+        >
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            aria-hidden="true"
+            role="img"
+            viewBox="0 0 448 512"
+            className="icon"
+          >
+            <path
+              fill="currentColor"
+              d="M436 124H12c-6.627 0-12-5.373-12-12V80c0-6.627 5.373-12 12-12h424c6.627 0 12 5.373 12 12v32c0 6.627-5.373 12-12 12zm0 160H12c-6.627 0-12-5.373-12-12v-32c0-6.627 5.373-12 12-12h424c6.627 0 12 5.373 12 12v32c0 6.627-5.373 12-12 12zm0 160H12c-6.627 0-12-5.373-12-12v-32c0-6.627 5.373-12 12-12h424c6.627 0 12 5.373 12 12v32c0 6.627-5.373 12-12 12z"
+            ></path>
+          </svg>
+        </div>
+        <a
+          href="#"
           onClick={() => {
             navigate("/")
           }}
-        >{`Today I Learned`}</FlexDiv>
-        <FlexDiv>책책체킷아웃~</FlexDiv>
-      </Header>
-      <FlexDiv style={{ height: "calc( 100% - 60px )" }}>
-        <SideBar>
+          className="home-link router-link-active"
+        >
+          <span className="site-name">Today I Learned</span>
+        </a>
+        <div className="links" style={{ maxWidth: "913px" }}>
+          <nav className="nav-links can-hide">
+            <div className="nav-item">
+              <a
+                href="https://github.com/cucupops/"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="nav-link external"
+              >
+                GitHub
+                <span>
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    aria-hidden="true"
+                    focusable="false"
+                    x="0px"
+                    y="0px"
+                    viewBox="0 0 100 100"
+                    width="15"
+                    height="15"
+                    className="icon outbound"
+                  >
+                    <path
+                      fill="currentColor"
+                      d="M18.8,85.1h56l0,0c2.2,0,4-1.8,4-4v-32h-8v28h-48v-48h28v-8h-32l0,0c-2.2,0-4,1.8-4,4v56C14.8,83.3,16.6,85.1,18.8,85.1z"
+                    ></path>
+                    <polygon
+                      fill="currentColor"
+                      points="45.7,48.7 51.3,54.3 77.2,28.5 77.2,37.2 85.2,37.2 85.2,14.9 62.8,14.9 62.8,22.9 71.5,22.9"
+                    ></polygon>
+                  </svg>
+                </span>
+              </a>
+            </div>
+          </nav>
+        </div>
+      </header>
+      <div className="sidebar-mask"></div>
+      <aside className="sidebar">
+        <nav className="nav-links">
+          <div className="nav-item">
+            <a
+              href="#"
+              onClick={() => {
+                navigate("https://github.com/cucupops/")
+              }}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="nav-link external"
+            >
+              GitHub
+              <span>
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  aria-hidden="true"
+                  focusable="false"
+                  x="0px"
+                  y="0px"
+                  viewBox="0 0 100 100"
+                  width="15"
+                  height="15"
+                  className="icon outbound"
+                >
+                  <path
+                    fill="currentColor"
+                    d="M18.8,85.1h56l0,0c2.2,0,4-1.8,4-4v-32h-8v28h-48v-48h28v-8h-32l0,0c-2.2,0-4,1.8-4,4v56C14.8,83.3,16.6,85.1,18.8,85.1z"
+                  ></path>
+                  <polygon
+                    fill="currentColor"
+                    points="45.7,48.7 51.3,54.3 77.2,28.5 77.2,37.2 85.2,37.2 85.2,14.9 62.8,14.9 62.8,22.9 71.5,22.9"
+                  ></polygon>
+                </svg>
+              </span>
+            </a>
+          </div>
+        </nav>
+        <ul className="sidebar-links">
           {parentList.map((v, i) => {
             return (
               <ListItem title={v} isOpen={false}>
                 {result[v].map((v2, i2) => (
-                  <div
-                    onClick={() => {
-                      navigate(v2.child)
-                    }}
-                  >
-                    {v2.child.split("/")[2]}
-                  </div>
+                  <li>
+                    <a
+                      href="#"
+                      onClick={() => {
+                        navigate(v2.child)
+                      }}
+                      class={`sidebar-link`}
+                    >
+                      {v2.child.split("/")[2]}
+                    </a>
+                  </li>
                 ))}
               </ListItem>
             )
           })}
-        </SideBar>
-        <ContentView>
-          <Content>
-            <p
-              style={{
-                fontSize: "80px",
-                whiteSpace: "pre-wrap",
-                margin: "80px 0px",
-                lineHeight: "100px",
-                borderBottom: "15px solid yellowgreen",
-              }}
-            >
-              {`오늘 배운건\n오늘 적자`}
-            </p>
-            <p
-              style={{
-                fontSize: "32px",
-                textAlign: "right",
-                whiteSpace: "pre-wrap",
-              }}
-            >
-              {`박기락's TIL`}
-            </p>
-          </Content>
-        </ContentView>
-      </FlexDiv>
-    </Container>
+        </ul>
+      </aside>
+      <main className="page">
+        <div className="theme-default-content content__default">
+          <div>
+            <div class="titleContainer">
+              <h1>
+                오늘 배운 건
+                <br />
+                오늘 적자
+              </h1>
+
+              <div class="infoContainer">
+                <div class="name">박기락's TIL</div>
+                <ul>
+                  <li>
+                    <a href="https://github.com/cucupops">GitHub</a>
+                  </li>
+                  <li>홀리몰리~</li>
+                  <li>홀리몰리~</li>
+                </ul>
+              </div>
+            </div>
+          </div>
+        </div>
+        <footer className="page-edit"> </footer>
+      </main>
+    </div>
   )
 }
 
