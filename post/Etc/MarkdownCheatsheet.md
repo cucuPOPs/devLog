@@ -45,7 +45,7 @@ priority: 1000
 ![alt-text](path)
 ```
 
-![fff](./duck.png)
+![fff](duck.png)
 
 ## Table
 
