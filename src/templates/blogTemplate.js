@@ -6,26 +6,63 @@ import moment from "moment"
 import styled from "styled-components"
 import ListItem from "../components/ListItem"
 import "../test.css"
-//import the Prism package
 require("prismjs/themes/prism-okaidia.css")
-export default function Template({
-  data, // this prop will be injected by the GraphQL query below.
-}) {
-  const [asidebarVisible, setAsideBarVisible] = useState(false)
-  const { markdownRemark, allMarkdownRemark } = data // data.markdownRemark holds your post data
-  const { frontmatter, html } = markdownRemark
-  const arr = allMarkdownRemark.edges.map((v, i) => ({
-    child: v.node.frontmatter.slug,
-    parent: v.node.frontmatter.slug.split("/")[1],
-  }))
+
+export const pageQuery = graphql`
+  query($slug: String!) {
+    markdownRemark(fields: { slug: { eq: $slug } }) {
+      html
+      frontmatter {
+        title
+      }
+      fields {
+        slug
+      }
+    }
+
+    allMarkdownRemark {
+      edges {
+        node {
+          fields {
+            slug
+          }
+          frontmatter {
+            title
+          }
+        }
+      }
+    }
+  }
+`
+export default function Template({ data }) {
+  const { markdownRemark, allMarkdownRemark } = data
+
+  const { frontmatter, fields, html } = markdownRemark
+  const arr = allMarkdownRemark.edges
+    .sort((a, b) => {
+      const temp1 = Number(a.node.fields.slug.split("/")[1].split(".")[0])
+      const temp2 = Number(b.node.fields.slug.split("/")[1].split(".")[0])
+      if (temp1 === temp2) {
+        return (
+          Number(a.node.fields.slug.split("/")[2].split(".")[0]) -
+          Number(b.node.fields.slug.split("/")[2].split(".")[0])
+        )
+      } else {
+        return temp1 - temp2
+      }
+    })
+    .map((v, i) => ({
+      child: v.node.fields.slug,
+      parent: v.node.fields.slug.split("/")[1],
+      title: v.node.frontmatter.title,
+    }))
   const parentList = [
     ...new Set(
-      allMarkdownRemark.edges.map(
-        (v, i) => v.node.frontmatter.slug.split("/")[1]
-      )
+      allMarkdownRemark.edges.map((v, i) => v.node.fields.slug.split("/")[1])
     ),
   ]
   const result = groupBy(arr, "parent")
+  const [asidebarVisible, setAsideBarVisible] = useState(false)
   return (
     <div className={`theme-container ${asidebarVisible ? "sidebar-open" : ""}`}>
       <header className="navbar">
@@ -141,23 +178,23 @@ export default function Template({
             return (
               <ListItem
                 key={i}
-                title={v}
-                isOpen={v === markdownRemark.frontmatter.slug.split("/")[1]}
+                title={v.split(".")[1]}
+                isOpen={v === markdownRemark.fields.slug.split("/")[1]}
               >
                 {result[v].map((v2, i2) => (
-                  <li key={i2}>
+                  <li key={i2} style={{ paddingLeft: "15px" }}>
                     <a
                       href="#"
                       onClick={() => {
-                        navigate(v2.child)
+                        const parent = v2.child.split("/")[1].split(".")[1]
+                        const child = v2.child.split("/")[2].split(".")[1]
+                        navigate(`/${parent}/${child}`)
                       }}
                       className={`sidebar-link ${
-                        markdownRemark.frontmatter.slug === v2.child
-                          ? "active"
-                          : ""
+                        markdownRemark.fields.slug === v2.child ? "active" : ""
                       }`}
                     >
-                      {v2.child.split("/")[2]}
+                      {v2.title}
                     </a>
                   </li>
                 ))}
@@ -188,129 +225,6 @@ export default function Template({
         </div>
         <footer className="page-edit"> </footer>
       </main>
-
-      {/* <FlexDiv style={{ height: "calc( 100% - 60px )", flexDirection: "row" }}>
-        <SideBar>
-          {parentList.map((v, i) => {
-            return (
-              <ListItem
-                title={v}
-                isOpen={v === markdownRemark.frontmatter.slug.split("/")[1]}
-              >
-                {result[v].map((v2, i2) => (
-                  <li               
-                  >
-                  <a  onClick={() => {
-                      navigate(v2.child)
-                    }} class="sidebar-link">
-                    {v2.child.split("/")[2]}
-                    </a>
-                  </li>
-                ))}
-              </ListItem>
-            )
-          })}
-        </SideBar>
-        <ContentView>
-          <Content>
-            <h1>{frontmatter.title}</h1>
-            <p
-              style={{
-                fontSize: "14px",
-                textAlign: "right",
-                lineHeight: "20px",
-                whiteSpace: "pre-wrap",
-              }}
-            >
-              {`Last update\n`}
-              {moment(frontmatter.date).format("YYYY년 MM월 DD일")}
-            </p>
-
-            <div
-              classNameName="blog-post-content"
-              dangerouslySetInnerHTML={{ __html: html }}
-              style={{ paddingBottom: "50px" }}
-            />
-          </Content>
-        </ContentView>
-      </FlexDiv> */}
     </div>
   )
 }
-
-export const pageQuery = graphql`
-  query($slug: String!) {
-    markdownRemark(frontmatter: { slug: { eq: $slug } }) {
-      html
-      frontmatter {
-        date(formatString: "MMMM DD, YYYY")
-        slug
-        title
-      }
-    }
-    allMarkdownRemark(
-      sort: {
-        fields: [frontmatter___priority, frontmatter___slug]
-        order: [ASC, ASC]
-      }
-      limit: 1000
-    ) {
-      edges {
-        node {
-          frontmatter {
-            slug
-          }
-        }
-      }
-    }
-  }
-`
-
-const Container = styled.div`
-  display: flex;
-  width: 100%;
-  height: 100%;
-  flex-direction: column;
-`
-const FlexDiv = styled.div`
-  display: flex;
-  margin-top: ${props => props.mt || 0};
-  margin-right: ${props => props.mr || 0};
-  margin-bottom: ${props => props.mb || 0};
-  margin-left: ${props => props.ml || 0};
-
-  padding-top: ${props => props.pt || 0};
-  padding-right: ${props => props.pr || 0};
-  padding-bottom: ${props => props.pb || 0};
-  padding-left: ${props => props.pl || 0};
-`
-const Header = styled.div`
-  display: flex;
-  flex-direction: row;
-  justify-content: space-between;
-  align-items: center;
-  padding: 11.2px 24px;
-  color: #2c3e50;
-  border-bottom: 1px solid #eaecef;
-  min-height: 60px;
-`
-const SideBar = styled.div`
-  min-width: 320px;
-  height: 100%;
-  display: flex;
-  flex-direction: column;
-  overflow-y: scroll;
-`
-const Content = styled.div`
-  display: flex;
-  flex-direction: column;
-  min-width: 1000px;
-  padding: 32px 40px;
-`
-const ContentView = styled.div`
-  display: flex;
-  width: 100%;
-  height: 100%;
-  overflow-y: scroll;
-  justify-content: center;
-`

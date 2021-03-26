@@ -1,14 +1,27 @@
-exports.createPages = async ({ actions, graphql, reporter }) => {
+const { createFilePath } = require(`gatsby-source-filesystem`)
+exports.onCreateNode = ({ node, actions, getNode }) => {
+  const { createNodeField } = actions
+  if (node.internal.type === `MarkdownRemark`) {
+    const relativeFilePath = createFilePath({
+      node,
+      getNode,
+    })
+    createNodeField({
+      name: `slug`,
+      node,
+      value: `${relativeFilePath}`,
+    })
+  }
+}
+exports.createPages = async ({ actions, graphql }) => {
   const { createPage } = actions
-
-  const blogPostTemplate = require.resolve(`./src/templates/blogTemplate.js`)
-
+  const postTemplete = require.resolve(`./src/templates/blogTemplate.js`)
   const result = await graphql(`
     {
-      allMarkdownRemark(sort: { fields: frontmatter___slug }, limit: 1000) {
+      allMarkdownRemark {
         edges {
           node {
-            frontmatter {
+            fields {
               slug
             }
           }
@@ -17,19 +30,15 @@ exports.createPages = async ({ actions, graphql, reporter }) => {
     }
   `)
 
-  // Handle errors
-  if (result.errors) {
-    reporter.panicOnBuild(`Error while running GraphQL query.`)
-    return
-  }
-
   result.data.allMarkdownRemark.edges.forEach(({ node }) => {
+    const parent = node.fields.slug.split("/")[1].split(".")[1]
+    const child = node.fields.slug.split("/")[2].split(".")[1]
     createPage({
-      path: node.frontmatter.slug,
-      component: blogPostTemplate,
+      path: `${parent}/${child}`,
+      component: postTemplete,
       context: {
         // additional data can be passed via context
-        slug: node.frontmatter.slug,
+        slug: node.fields.slug,
       },
     })
   })

@@ -9,37 +9,46 @@ import "../global.css"
 const IndexPage = () => {
   const data = useStaticQuery(graphql`
     query {
-      allMarkdownRemark(
-        sort: {
-          fields: [frontmatter___priority, frontmatter___slug]
-          order: [ASC, ASC]
-        }
-        limit: 1000
-      ) {
+      allMarkdownRemark {
         edges {
           node {
-            frontmatter {
+            fields {
               slug
+            }
+            frontmatter {
+              title
             }
           }
         }
       }
     }
   `)
-  const [asidebarVisible, setAsideBarVisible] = useState(false)
   const { allMarkdownRemark } = data
-  const arr = allMarkdownRemark.edges.map((v, i) => ({
-    child: v.node.frontmatter.slug,
-    parent: v.node.frontmatter.slug.split("/")[1],
-  }))
+  const arr = allMarkdownRemark.edges
+    .sort((a, b) => {
+      const temp1 = Number(a.node.fields.slug.split("/")[1].split(".")[0])
+      const temp2 = Number(b.node.fields.slug.split("/")[1].split(".")[0])
+      if (temp1 === temp2) {
+        return (
+          Number(a.node.fields.slug.split("/")[2].split(".")[0]) -
+          Number(b.node.fields.slug.split("/")[2].split(".")[0])
+        )
+      } else {
+        return temp1 - temp2
+      }
+    })
+    .map((v, i) => ({
+      child: v.node.fields.slug,
+      parent: v.node.fields.slug.split("/")[1],
+      title: v.node.frontmatter.title,
+    }))
   const parentList = [
     ...new Set(
-      allMarkdownRemark.edges.map(
-        (v, i) => v.node.frontmatter.slug.split("/")[1]
-      )
+      allMarkdownRemark.edges.map((v, i) => v.node.fields.slug.split("/")[1])
     ),
   ]
   const result = groupBy(arr, "parent")
+  const [asidebarVisible, setAsideBarVisible] = useState(false)
   return (
     <div className={`theme-container ${asidebarVisible ? "sidebar-open" : ""}`}>
       <header className="navbar">
@@ -155,15 +164,17 @@ const IndexPage = () => {
             return (
               <ListItem title={v} isOpen={false} key={i}>
                 {result[v].map((v2, i2) => (
-                  <li key={i2}>
+                  <li key={i2} style={{ paddingLeft: "15px" }}>
                     <a
                       href="#"
                       onClick={() => {
-                        navigate(v2.child)
+                        const parent = v2.child.split("/")[1].split(".")[1]
+                        const child = v2.child.split("/")[2].split(".")[1]
+                        navigate(`/${parent}/${child}`)
                       }}
                       className={`sidebar-link`}
                     >
-                      {v2.child.split("/")[2]}
+                      {v2.title}
                     </a>
                   </li>
                 ))}
@@ -202,52 +213,3 @@ const IndexPage = () => {
 }
 
 export default IndexPage
-const Container = styled.div`
-  display: flex;
-  width: 100%;
-  height: 100%;
-  flex-direction: column;
-`
-const FlexDiv = styled.div`
-  display: flex;
-  flex-direction: row;
-  margin-top: ${props => props.mt || 0};
-  margin-right: ${props => props.mr || 0};
-  margin-bottom: ${props => props.mb || 0};
-  margin-left: ${props => props.ml || 0};
-
-  padding-top: ${props => props.pt || 0};
-  padding-right: ${props => props.pr || 0};
-  padding-bottom: ${props => props.pb || 0};
-  padding-left: ${props => props.pl || 0};
-`
-const Header = styled.div`
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  padding: 11.2px 24px;
-  color: #2c3e50;
-  border-bottom: 1px solid #eaecef;
-  flex-direction: row;
-  min-height: 60px;
-`
-const SideBar = styled.div`
-  min-width: 320px;
-  height: 100%;
-  display: flex;
-  flex-direction: column;
-  overflow-y: scroll;
-`
-const Content = styled.div`
-  display: flex;
-  flex-direction: column;
-  min-width: 1000px;
-  padding: 32px 40px;
-`
-const ContentView = styled.div`
-  display: flex;
-  width: 100%;
-  height: 100%;
-  overflow-y: scroll;
-  justify-content: center;
-`
