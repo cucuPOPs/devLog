@@ -162,7 +162,7 @@ const IndexPage = () => {
         <ul className="sidebar-links">
           {parentList.map((v, i) => {
             return (
-              <ListItem title={v} isOpen={false} key={i}>
+              <ListItem title={v.split(".")[1]} isOpen={false} key={i}>
                 {result[v].map((v2, i2) => (
                   <li key={i2} style={{ paddingLeft: "15px" }}>
                     <a
