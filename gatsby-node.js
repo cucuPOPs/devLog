@@ -21,6 +21,10 @@ exports.createPages = async ({ actions, graphql }) => {
       allMarkdownRemark {
         edges {
           node {
+            html
+            frontmatter {
+              title
+            }
             fields {
               slug
             }
@@ -30,15 +34,17 @@ exports.createPages = async ({ actions, graphql }) => {
     }
   `)
 
-  result.data.allMarkdownRemark.edges.forEach(({ node }) => {
+  result.data.allMarkdownRemark.edges.forEach(({ node }, index, array) => {
     const parent = node.fields.slug.split("/")[1].split(".")[1]
     const child = node.fields.slug.split("/")[2].split(".")[1]
     createPage({
       path: `${parent}/${child}`,
       component: postTemplete,
       context: {
-        // additional data can be passed via context
         slug: node.fields.slug,
+        frontmatter: node.frontmatter,
+        html: node.html,
+        totalNode: array,
       },
     })
   })

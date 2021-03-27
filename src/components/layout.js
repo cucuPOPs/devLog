@@ -1,54 +1,55 @@
-/**
- * Layout component that queries for data
- * with Gatsby's useStaticQuery component
- *
- * See: https://www.gatsbyjs.com/docs/use-static-query/
- */
+import React, { useState } from "react"
 
-import * as React from "react"
-import PropTypes from "prop-types"
-import { useStaticQuery, graphql } from "gatsby"
+import moment from "moment"
+import Header from "../components/header"
+import Asidebar from "../components/asidebar"
 
-import Header from "./header"
+const Layout = props => {
+  const {
+    currentSlug,
+    isMain,
+    contentTitle,
+    contentFirstDate,
+    contentLastUpdate,
+    children,
+    totalNode,
+  } = props
 
-const Layout = ({ children }) => {
-  const data = useStaticQuery(graphql`
-    query SiteTitleQuery {
-      site {
-        siteMetadata {
-          title
-        }
-      }
-    }
-  `)
-
+  const [asidebarVisible, setAsideBarVisible] = useState(false)
   return (
-    <>
-      <Header siteTitle={data.site.siteMetadata?.title || `Title`} />
-      <div
-        style={{
-          margin: `0 auto`,
-          maxWidth: 960,
-          padding: `0 1.0875rem 1.45rem`,
-        }}
-      >
-        <main>{children}</main>
-        <footer
-          style={{
-            marginTop: `2rem`,
-          }}
-        >
-          © {new Date().getFullYear()}, Built with
-          {` `}
-          <a href="https://www.gatsbyjs.com">Gatsby</a>
-        </footer>
-      </div>
-    </>
+    <div className={`theme-container ${asidebarVisible ? "sidebar-open" : ""}`}>
+      <Header
+        asidebarVisible={asidebarVisible}
+        setAsideBarVisible={setAsideBarVisible}
+      />
+      <Asidebar
+        totalNode={totalNode}
+        isMain={isMain}
+        currentSlug={currentSlug}
+      />
+      <main className="page">
+        <div className="theme-default-content content__default">
+          <div>
+            <h1>{contentTitle}</h1>
+            <p
+              style={{
+                fontSize: "14px",
+                textAlign: "right",
+                lineHeight: "20px",
+                whiteSpace: "pre-wrap",
+              }}
+            >
+              {moment(contentFirstDate).format("YYYY.MM.DD.")}
+              {`에 처음씀\n`}
+              {moment(contentLastUpdate).format("YYYY.MM.DD.")}
+              {`에 수정함`}
+            </p>
+            {children}
+          </div>
+        </div>
+        <footer className="page-edit"> </footer>
+      </main>
+    </div>
   )
 }
-
-Layout.propTypes = {
-  children: PropTypes.node.isRequired,
-}
-
 export default Layout

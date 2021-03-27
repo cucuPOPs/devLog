@@ -1,6 +1,4 @@
-import { navigate } from "gatsby-link"
 import React, { useState } from "react"
-import styled from "styled-components"
 
 const ListItem = props => {
   const { title, children, isOpen } = props
