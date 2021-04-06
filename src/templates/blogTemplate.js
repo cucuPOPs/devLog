@@ -3,19 +3,19 @@ import "../test.css"
 import Layout from "../components/layout"
 require("prismjs/themes/prism-okaidia.css")
 export default function Template(props) {
-  console.log("props", props)
   const frontmatter = props.pageContext.frontmatter
   const slug = props.pageContext.slug
   const html = props.pageContext.html
   const totalNode = props.pageContext.totalNode
+  console.log("props", props)
   return (
     <Layout
       isMain={false}
       currentSlug={slug}
       totalNode={totalNode}
       contentTitle={frontmatter.title}
-      contentFirstDate={frontmatter.lastDate}
-      contentLastUpdate={frontmatter.firstDate}
+      contentFirstDate={frontmatter.firstDate}
+      contentLastUpdate={frontmatter.lastDate}
     >
       <div
         className="blog-post-content"

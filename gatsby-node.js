@@ -24,6 +24,8 @@ exports.createPages = async ({ actions, graphql }) => {
             html
             frontmatter {
               title
+              firstDate
+              lastDate
             }
             fields {
               slug

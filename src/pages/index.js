@@ -31,8 +31,8 @@ const IndexPage = props => {
           오늘 적자
         </>
       }
-      contentFirstDate={`2021/03/18`}
-      contentLastUpdate={`2021/03/28`}
+      contentFirstDate={`2021.03.18 `}
+      contentLastUpdate={`2021.03.28 `}
     >
       <div className="infoContainer">
         <div className="name">박기락's TIL</div>

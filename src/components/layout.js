@@ -39,9 +39,9 @@ const Layout = props => {
                 whiteSpace: "pre-wrap",
               }}
             >
-              {moment(contentFirstDate).format("YYYY.MM.DD.")}
+              {moment(contentFirstDate).format("YYYY.MM.DD ")}
               {`에 처음씀\n`}
-              {moment(contentLastUpdate).format("YYYY.MM.DD.")}
+              {moment(contentLastUpdate).format("YYYY.MM.DD ")}
               {`에 수정함`}
             </p>
             {children}
